@@ -13,6 +13,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.ipl.dao.TeamDao;
 import com.ipl.pojo.Fixture;
+import com.ipl.pojo.Player;
+import com.ipl.pojo.PointsModel;
+import com.ipl.pojo.Team;
+import com.ipl.pojo.User;
+import com.ipl.pojo.Userselection;
+import com.ipl.validator.TeamValidator;
+
 
 @Controller
 @RequestMapping(value="user")
@@ -23,7 +30,10 @@ public class UserController {
 	@Autowired
 	TeamDao teamdao;
 	
-	//user home
+	@Autowired
+	TeamValidator teamvalidator;
+	
+	//match lists
 	@RequestMapping(value="/match.htm",method = RequestMethod.GET)
 	public String matchCentre(Model model,HttpServletRequest request) {
 		String route = "match";
@@ -39,20 +49,93 @@ public class UserController {
 		return pgntfn;
 	}
 	
-	@RequestMapping(value="/teamselection.htm?id={id}",method=RequestMethod.GET)
+	//make a team from a match
+	@RequestMapping(value="/teamselection.htm",method=RequestMethod.GET)
 	public String teamSel(Model model,HttpServletRequest request) {
 		String route = "sel";
-		String matchId = request.getParameter("id");
 		HttpSession session = request.getSession(false);
+		String matid = request.getParameter("matid");
+		String matchId = matid == null ? (String)session.getAttribute("matchid"):matid;
+		String val = matchId.replace("\'", "");
 		if(session != null) {
 			if(session.getAttribute("user") != null) { 
-//				List<Fixture> fixtures = teamdao.registerMatch(matchId);
-//				model.addAttribute("fixtures",fixtures);
-				
-				return route;
+				if(matchId != null) {
+					Fixture fixtures = teamdao.registerMatch(val);
+					List<Player> playerTeam1 = teamdao.getPlayers((Team)fixtures.getTeam1());
+					List<Player> playerTeam2 = teamdao.getPlayers((Team)fixtures.getTeam2());
+					model.addAttribute("teamsel",fixtures);
+					model.addAttribute("pTeam1",playerTeam1);
+					model.addAttribute("pTeam2",playerTeam2);
+					return route;
+				}
 			}
 		}
 		return route;
+	}
+	
+	@RequestMapping(value="/teamselection.htm",method=RequestMethod.POST)
+	public String teamSelection(Model model,HttpServletRequest request) {
+//		String route = "sel";
+		HttpSession session = request.getSession(false);
+		if(session != null) {
+			if(session.getAttribute("user") != null) {
+				String matchId = request.getParameter("matchId");
+				String playerid[] = request.getParameterValues("playerid");
+				String winner = request.getParameter("winner");
+				User user = (User) session.getAttribute("user");
+				String validate = teamvalidator.selectionValidate(playerid,winner);
+				if(validate==null) {
+					//no error hence save
+					boolean saved = teamdao.saveSelection(playerid, winner, matchId,user);
+					if(saved)
+						{return "redirect:myselection.htm";}
+					else {
+						session.setAttribute("error", "Data already sent");
+						session.setAttribute("matchid", matchId);
+						return "redirect:teamselection.htm";
+					}
+				}else {
+					//validation errors
+					System.out.println(validate);
+					session.setAttribute("error", validate);
+					session.setAttribute("matchid", matchId);
+					return "redirect:teamselection.htm";
+				}
+			}
+		}
+		
+		return pgntfn;
+	}
+	//see the teams you've created
+	@RequestMapping(value="/myselection.htm",method=RequestMethod.GET)
+	public String getteamDashboard(Model model,HttpServletRequest request) {
+		HttpSession session = request.getSession(false);
+		
+		if(session != null) {
+			if(session.getAttribute("user") != null) {
+//				logic to display all teams
+				User user = (User) session.getAttribute("user");
+				List<Userselection> usersel = teamdao.registred(user);
+				List<PointsModel> pointslist = teamdao.getPoints(usersel,user);
+				model.addAttribute("points",pointslist);
+				return "teamsel";
+			}
+		}
+		return pgntfn;
+	}
+	
+//	//actions on teams you've created
+	@RequestMapping(value="/myselection.htm",method=RequestMethod.POST)
+	public String postteamDashboard(Model model,HttpServletRequest request) 
+	{
+		HttpSession session = request.getSession(false);
+		if(session != null) {
+			if(session.getAttribute("user") != null) {
+				//logic to save team
+				
+			}
+		}
+		return pgntfn;
 	}
 	
 	//update user details -------------> INCOMPLETE

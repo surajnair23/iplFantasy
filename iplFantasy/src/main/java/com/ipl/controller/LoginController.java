@@ -73,10 +73,11 @@ public class LoginController {
 			return "login";  //the are validation errors, go to the form view
 		}else {
 			Boolean isAdmin = userdao.isAdmin(user);
+			User u = userdao.getUserObj(user.getUsername());
 			if(isAdmin) {
-				session.setAttribute("admin", user);
+				session.setAttribute("admin", u);
 			}else {
-				session.setAttribute("user", user);
+				session.setAttribute("user", u);
 			}
 			return "redirect:mainPage.htm";
 		}

@@ -9,21 +9,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.ipl.dao.*;
-import com.ipl.pojo.*;
-import com.ipl.validator.*;
-import com.sun.net.httpserver.Authenticator.Success;
+import com.ipl.dao.TeamDao;
+import com.ipl.pojo.Fixture;
+import com.ipl.validator.TeamValidator;
 
 @Controller
 public class MatchController {
@@ -91,24 +84,19 @@ public class MatchController {
 		}
 		
 		//update match winner /ipl/user/updatematch.htm?matid=6&winteam=2
-		
-		@RequestMapping(value="matchupdate.htm",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-		@ResponseStatus(value=HttpStatus.OK)
-		public @ResponseBody ResponseEntity<?> updateMatch(HttpServletRequest request,Model model,@RequestBody String matid,@RequestBody String winteam){
+		@RequestMapping(value="matchupdate.htm",method = RequestMethod.GET)
+		public void updateMatch(HttpServletRequest request,Model model){
+			System.out.println("AJAX call");
 			HttpSession session = request.getSession(false);
 			if(session != null) {
 				if(session.getAttribute("admin") != null) { 
-//					String matchId = request.getParameter("matid");
-//					String winner = request.getParameter("winteam");
-					boolean updated = teamdao.updateTeam(matid,winteam);
-					if(updated) {
-						List<Fixture> fixtures = teamdao.getFixture();
-						model.addAttribute("fixtures",fixtures);
-						return new ResponseEntity<Success>(HttpStatus.OK);
-					}
+					String matchId = request.getParameter("matid");
+					String winner = request.getParameter("winteam");
+					boolean updated = teamdao.updateTeam(matchId,winner);
+					if(!updated)
+						{System.out.println("Value did not update");}
 				}
 			}
-			return new ResponseEntity<Error>(HttpStatus.OK);
 		}
 		
 		

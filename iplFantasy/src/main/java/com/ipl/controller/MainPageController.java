@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -49,58 +50,28 @@ public class MainPageController {
 	}
 	
 	//approve user
-	@RequestMapping(value="userapprove.htm", method = RequestMethod.POST)
-	public String approveUser(HttpServletRequest request) {
+	@RequestMapping(value="userapprove.htm", method = RequestMethod.GET)
+	public void approveUser(HttpServletRequest request) {
 		HttpSession session = request.getSession(false);
-		String reqIds[] = request.getParameterValues("userIds");
-		long id;
-		boolean isApproved = false;
+		String uid = request.getParameter("userid");
+		long id = Long.parseLong(uid);
 		if(session != null) {
 			if(session.getAttribute("admin") != null) {
-				if(reqIds == null || reqIds.length <= 0) {
-					return "approval";
-				}else {
-					for(String s: reqIds){
-						id = Long.parseLong(s);
-						isApproved = userdao.approveUser(id);
-						if(!isApproved) {
-							break;
-						}
-					}
-				}
-				return "approval";
+				userdao.approveUser(id);
 			}
-		return pgntfn;
-		}else {
-			return pgntfn;
 		}
 	}
 	
 	//delete user
-	@RequestMapping(value="userdelete.htm", method = RequestMethod.POST)
-	public String deleteUser(HttpServletRequest request) {
+	@RequestMapping(value="userdelete.htm", method = RequestMethod.GET)
+	public void deleteUser(HttpServletRequest request) {
 		HttpSession session = request.getSession(false);
-		String reqIds[] = request.getParameterValues("userIds");
-		long id;
-		boolean isDeleted = false;
+		String uid = request.getParameter("userid");
+		long id = Long.parseLong(uid);
 		if(session != null) {
 			if(session.getAttribute("admin") != null) {
-				if(reqIds == null || reqIds.length <= 0) {
-					return "approval";
-				}else {
-					for(String s: reqIds){
-						id = Long.parseLong(s);
-						isDeleted = userdao.deleteUser(id);
-						if(!isDeleted) {
-							break;
-						}
-					}
-				}	
-				return "redirect:approval.htm";
+				userdao.deleteUser(id);
 			}
-			return pgntfn;
-		}else {
-			return pgntfn;
 		}
 	}
 	
@@ -110,6 +81,14 @@ public class MainPageController {
 		HttpSession session = request.getSession();
 		session.invalidate();
 		return "redirect:login.htm";
+	}
+	
+	//Scoreboard update
+	@RequestMapping(value="scoreboard.htm",method =RequestMethod.GET)
+	public String updatePlayerscore(Model model, HttpServletRequest request) {
+		
+		//chck if the matchid in the url does has points, then just show that, else create form and update the details
+		return "score";
 	}
 	
 	//page not found

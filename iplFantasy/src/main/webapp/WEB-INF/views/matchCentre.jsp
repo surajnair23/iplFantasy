@@ -14,8 +14,6 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-  <script defer src="https://use.fontawesome.com/releases/v5.8.1/js/all.js" integrity="sha384-g5uSoOSBd7KkhAMlnQILrecXvzst9TdC09/VM+pjDTCM+1il8RHz5fKANTFFb+gQ" crossorigin="anonymous"></script>
   <script type="text/javascript">
   $(document).ready(function(){
 		$("#showForm").hide();
@@ -31,16 +29,14 @@
 					"winteam" : winteam
 					}
 			console.log(matid+winteam);
-			var givenutl='/ipl/matchupdate.htm';
+			var rand = Math.floor(Math.random() * 101);
+			var givenutl="/ipl/matchupdate.htm?id="+rand+"&matid="+matid+"&winteam="+winteam;
 			$.ajax({
-				type:"post",
+				type:"GET",
 				url: givenutl,
-				contentType:'application/json',
-				dataType: 'json',
-				data: sendData,
-				success: function(result){
-	    			alert("Value updated");
-	    			$(this).remove();
+				complete: function(result){
+	    			alert("Winner is updated");
+	    			window.location.href=window.location.href;
 	  		}});
 		});
   });
@@ -61,7 +57,7 @@
 				<!-- dynamically create the input flds -->
 				<c:if test="${teams != null}">
 					<!-- dynamically show form -->
-					<button class="btn btn-primary" id="showDiv">Add match</button><br>
+					<a class="btn btn-primary" id="showDiv">Add match</a><br>
 					<c:if test="${requestScope.success != null}">
     					<p><c:out value="${requestScope.success}"></c:out></p>
     				</c:if>
@@ -100,7 +96,7 @@
 						    </div>
 						    <div class="col-sm-4">
 						    <br><br>
-						    <button type="submit" id="matchadd" class="btn btn-success">Create Match</button>
+						    <input type="submit" id="matchaddbtn" class="btn btn-success" value="Create Match"/>
 						    </div>
 						</form>
 					</div>
@@ -141,13 +137,13 @@
 									</div>	
 								</c:if>
 								<c:if test="${fixture.getWinTeam() != null}">
-									<c:out value="${fixture.getWinTeam().getTeamName()}"></c:out>
+									<c:out value="${fixture.getWinTeam().getTeamName()}"/>
+									<a href="${pageContext.request.contextPath}/scoreboard.htm?matid='<c:out value="${fixture.getMatchId()}"/>'" class="btn btn-success">Player scores</a>
 								</c:if>
 							</td>
 						</tr>
 						</c:forEach>
 					</table>
-					</form>
 				</c:if>
 				</div>
 			</div>

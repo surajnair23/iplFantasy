@@ -3,54 +3,54 @@
 <html>
 <head>
 	<title>IPL Fantasy</title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <style>
+  /* Make the image fully responsive */
+  .carousel-inner img {
+    width: 100%;
+    height: 100%;
+  }
+  </style>
 </head>
-<body>
-<header>
-	//NAV BAR
-</header>
+<body class="container">
+
 <div id="myCarousel" class="carousel slide" data-ride="carousel">
-    <!-- Indicators -->
-    <ol class="carousel-indicators">
-      <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-      <li data-target="#myCarousel" data-slide-to="1"></li>
-      <li data-target="#myCarousel" data-slide-to="2"></li>
-    </ol>
 
-    <!-- Wrapper for slides -->
-    <div class="carousel-inner">
-      <div class="item active">
-        <img src="<c:url value="/resources/assets/ipl1.png" />" alt="ipl1" style="width:100%;">
-      </div>
-
-      <div class="item">
-        <img src="<c:url value="/resources/assets/ipl2.jpg" />" alt="ipl2" style="width:100%;">
-      </div>
-    
-      <div class="item">
-        <img src="<c:url value="/resources/assets/ipl3.jpg" />" alt="ipl3" style="width:100%;">
-      </div>
+  <!-- Indicators -->
+  <ul class="carousel-indicators">
+    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+    <li data-target="#myCarousel" data-slide-to="1"></li>
+    <li data-target="#myCarousel" data-slide-to="2"></li>
+  </ul>
+  
+  <!-- The slideshow -->
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="<c:url value="/resources/assets/ipl1.png" />" alt="ipl1" style="width:100%;height:100%;">
     </div>
-
-    <!-- Left and right controls -->
-    <a class="left carousel-control" href="#myCarousel" data-slide="prev">
-      <span class="glyphicon glyphicon-chevron-left"></span>
-      <span class="sr-only">Previous</span>
-    </a>
-    <a class="right carousel-control" href="#myCarousel" data-slide="next">
-      <span class="glyphicon glyphicon-chevron-right"></span>
-      <span class="sr-only">Next</span>
-    </a>
+    <div class="carousel-item">
+      <img src="<c:url value="/resources/assets/ipl2.jpg" />" alt="ipl1" style="width:100%;height:500px;">
+    </div>
+    <div class="carousel-item">
+      <img src="<c:url value="/resources/assets/ipl3.jpg" />" alt="ipl1" style="width:100%;height:500px;">
+    </div>
   </div>
-<div id="workspace" style="text-align:center">
-	<h1>Lets get started!</h1>
-	<a class="btn btn-primary" href="login.htm">Login/Register</a><br>
+  <div class="carousel-caption">
+  	<a href="/ipl/login.htm" class="btn btn-primary">Let's get Started!</a>
+  </div>
+  <!-- Left and right controls -->
+  <a class="carousel-control-prev" href="#myCarousel" data-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </a>
+  <a class="carousel-control-next" href="#myCarousel" data-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </a>
 </div>
-<br>
-<footer>
-	The time on the server is ${serverTime}.
-</footer>
+
+
 </body>
 </html>

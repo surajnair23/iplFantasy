@@ -10,6 +10,7 @@ import org.hibernate.cfg.Configuration;
 
 import com.ipl.pojo.Fixture;
 import com.ipl.pojo.Player;
+import com.ipl.pojo.Playerpoints;
 import com.ipl.pojo.Team;
 import com.ipl.pojo.User;
 import com.ipl.pojo.Userselection;
@@ -18,6 +19,7 @@ public class Dao {
 	
 	private static final Logger log = Logger.getAnonymousLogger();
     
+	@SuppressWarnings("rawtypes")
 	private static final ThreadLocal sessionThread = new ThreadLocal();
 	static SessionFactory sessionFactory;
     //You havnt nt put classes yet
@@ -29,10 +31,12 @@ public class Dao {
     	conf.addAnnotatedClass(Player.class);
     	conf.addAnnotatedClass(Fixture.class);
     	conf.addAnnotatedClass(Userselection.class);
+    	conf.addAnnotatedClass(Playerpoints.class);
     	sessionFactory = conf.buildSessionFactory();
     }
 
-    public static Session getSession()
+    @SuppressWarnings("unchecked")
+	public static Session getSession()
     {
     	
         Session session = (Session) Dao.sessionThread.get();
@@ -53,7 +57,8 @@ public class Dao {
         getSession().getTransaction().commit();
     }
 
-    protected void rollback() {
+    @SuppressWarnings("unchecked")
+	protected void rollback() {
         try {
             getSession().getTransaction().rollback();
         } catch (HibernateException e) {
@@ -67,7 +72,8 @@ public class Dao {
         Dao.sessionThread.set(null);
     }
 
-    public static void close() {
+    @SuppressWarnings("unchecked")
+	public static void close() {
         getSession().close();
         Dao.sessionThread.set(null);
     }

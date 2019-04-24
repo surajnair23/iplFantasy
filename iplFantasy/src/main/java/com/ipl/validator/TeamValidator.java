@@ -1,9 +1,5 @@
 package com.ipl.validator;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 public class TeamValidator{
@@ -56,6 +52,21 @@ public class TeamValidator{
 		}
 		if(city==null) {return "Venue is required!";}
 		
+		return null;
+	}
+	
+	public String selectionValidate(String playerIds[], String winner) {
+		if(winner == null) {
+			return "Winner selection is required!";
+		}
+		System.out.println("Validation in progress");
+		if(playerIds == null) {
+			return "Selecting players is mandatory";
+			}else { 
+			if(playerIds.length != 5) { 
+				return "You cant only select 5 players!";
+				}
+			}
 		return null;
 	}
 }

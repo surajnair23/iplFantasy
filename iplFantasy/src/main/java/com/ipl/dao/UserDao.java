@@ -33,11 +33,11 @@ public class UserDao extends Dao {
 	}
 	
 	//function to check if username already exists
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public boolean authenticate(String val) throws UserException{
 		Boolean result = false;
 		try {
 			begin();
-			@SuppressWarnings("deprecation")
 			Query q = getSession().createQuery("from User where username=:username");
 			q.setString("username", val);
 			List<String> list = q.list(); 
@@ -61,7 +61,6 @@ public class UserDao extends Dao {
 		String result = null;
 		try {
 			begin();
-			@SuppressWarnings("deprecation")
 			Criteria c = getSession().createCriteria(User.class);
 			c.add(Restrictions.eq("username", username));
 			c.add(Restrictions.eq("password",pwd));
@@ -85,7 +84,6 @@ public class UserDao extends Dao {
 	//function to checkforAdminLogin
 	public boolean isAdmin(User user) {
 		Boolean result = false;
-		@SuppressWarnings("deprecation")
 		Criteria c = getSession().createCriteria(User.class);
 		c.add(Restrictions.ilike("username", user.getUsername()));
 		c.setMaxResults(1);
@@ -102,6 +100,7 @@ public class UserDao extends Dao {
 		int update = 0;
 		try {
 			begin();
+			@SuppressWarnings("rawtypes")
 			Query q = getSession().createQuery("update User set isApproved=:val " + "where userId=:userId");
 			q.setBoolean("val", true);
 			q.setLong("userId", userid);
@@ -122,7 +121,6 @@ public class UserDao extends Dao {
 		int update = 0;
 		try {
 			begin();
-			@SuppressWarnings("deprecation")
 			Criteria c = getSession().createCriteria(User.class);
 			c.add(Restrictions.idEq(val));
 			c.setMaxResults(1);
@@ -136,5 +134,14 @@ public class UserDao extends Dao {
 		}
 		result = update > 0 ? true : false;
 		return result;
+	}
+
+	public User getUserObj(String username) {
+		// TODO Auto-generated method stub
+		Criteria c = getSession().createCriteria(User.class);
+		c.add(Restrictions.eq("username", username));
+		
+		User user = (User) c.uniqueResult(); 
+		return user;
 	}
 }

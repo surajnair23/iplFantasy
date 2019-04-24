@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.ipl.dao.UserDao;
-import com.ipl.exception.UserException;
 import com.ipl.pojo.User;
 import com.ipl.validator.UserValidator;
 

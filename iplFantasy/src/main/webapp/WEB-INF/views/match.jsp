@@ -33,8 +33,8 @@
 		   		<td><c:out value="${mat.getTeam1().getTeamName()}"/>(<c:out value="${mat.getTeam1().getTeamAbv()}"/>) VS
 		   		<c:out value="${mat.getTeam2().getTeamName()}"/>(<c:out value="${mat.getTeam2().getTeamAbv()}"/>)</td>
 		   		<td><c:out value="${mat.getMatchDate()}"/></td>
-		   		<td><c:out value="${mat.getVenue()}"/></td>
-		   		<td><a href="${pageContext.request.contextPath}/user/teamselection.htm?id='<c:out value="${mat.getMatchId()}"/>'" class="btn btn-success">Make a Team</button>
+		   		<td><c:out value="${mat.getVenue()}"/></td><c:set var="rand"><%= java.lang.Math.round(java.lang.Math.random() * 100) %></c:set>
+		   		<td><a href="${pageContext.request.contextPath}/user/teamselection.htm?matid='<c:out value="${mat.getMatchId()}"/>'" class="btn btn-success">Make a Team</button>
 		   		</td>
 		   		</tr>
 		   	</c:if>	

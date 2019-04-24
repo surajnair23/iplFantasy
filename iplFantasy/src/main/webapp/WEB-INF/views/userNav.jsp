@@ -6,7 +6,7 @@
 		<ul class="nav navbar-nav">
 		<li class="active"><a href="${pageContext.request.contextPath}/mainPage.htm">Home</a></li>
 		<li><a href="${pageContext.request.contextPath}/user/match.htm">Matches</a></li>
-		<li><a href="#">Page 3</a></li>
+		<li><a href="${pageContext.request.contextPath}/user/myselection.htm">MyTeams</a></li>
 		<li class="dropdown">
 			<a class="dropdown-toggle" data-toggle="dropdown" href="mainPage.htm">Dashboard
 			<span class="caret"></span></a>

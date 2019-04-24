@@ -1,14 +1,16 @@
 package com.ipl.pojo;
 
-import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -27,8 +29,28 @@ public class Userselection {
 	@OneToOne
 	private Fixture fixture;
 	
-	@OneToMany
-	private Set<Player> playerSet = new HashSet<Player>();
+	@ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "Usersel_Players", 
+             joinColumns = { @JoinColumn(name = "selectionId") }, 
+             inverseJoinColumns = { @JoinColumn(name = "playerId") })
+	private Set<Player> playerSet;
+	
+	@OneToOne
+	private Team winner;
+
+	/**
+	 * @return the winner
+	 */
+	public Team getWinner() {
+		return winner;
+	}
+
+	/**
+	 * @param winner the winner to set
+	 */
+	public void setWinner(Team winner) {
+		this.winner = winner;
+	}
 
 	/**
 	 * @return the selectionId
@@ -86,5 +108,5 @@ public class Userselection {
 		this.playerSet = playerSet;
 	}
 	
-	
+	// you will also have a player points table,  playrid, matchid, points
 }
