@@ -54,7 +54,7 @@ public class TeamController {
 					String validmessage = teamValidator.validateForm(tAbv,tName,pName,tPlayer,captain,wk,homeCity);
 					if(validmessage != null) {
 						//some validation error
-						request.setAttribute("success", validmessage);
+						request.setAttribute("error", validmessage);
 						return "addTeam";
 					}else {
 						teamSave = teamdao.saveTeam(tAbv,tName,pName,tPlayer,captain,wk,homeCity);
@@ -63,7 +63,7 @@ public class TeamController {
 							request.setAttribute("success", "Team Saved");
 							return "addTeam";
 						}else {
-							request.setAttribute("success", "Failure to save, try again");
+							request.setAttribute("error", "Failure to save, try again");
 							return "addTeam";
 						}
 					}

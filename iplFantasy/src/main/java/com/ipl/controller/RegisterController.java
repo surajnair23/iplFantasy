@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.ipl.dao.UserDao;
 import com.ipl.pojo.User;
@@ -67,6 +69,9 @@ public class RegisterController {
 				user.setCreatedDate(dt);
 				user.setUdpatedDate(dt);
 				//setting values to not null
+				String newpass = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+				System.out.println("Hashed value:"+newpass);
+				user.setPassword(newpass);
 				result = userdao.register(user);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

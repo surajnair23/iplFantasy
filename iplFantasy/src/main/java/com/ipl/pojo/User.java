@@ -26,7 +26,7 @@ public class User {
 	 	private String lName;
 
 	 	@Column(nullable = false)
-	 	private long phone;
+	 	private String phone;
 	 	
 	 	@Column(nullable = false)
 	 	private String email;
@@ -109,11 +109,11 @@ public class User {
 			this.lName = lName;
 		}
 
-		public long getPhone() {
+		public String getPhone() {
 			return phone;
 		}
 
-		public void setPhone(long phone) {
+		public void setPhone(String phone) {
 			this.phone = phone;
 		}
 

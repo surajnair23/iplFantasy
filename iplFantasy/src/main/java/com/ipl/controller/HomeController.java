@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 /**
  * Handles requests for the application home page.
  */
+//*-----------------|-------------------|--------------*//
+// /  				| home.jsp	        | list of matches
+
 @Controller
 public class HomeController {
 	

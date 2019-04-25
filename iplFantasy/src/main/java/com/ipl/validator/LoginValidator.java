@@ -33,7 +33,7 @@ public class LoginValidator implements Validator{
 				if(user.getPassword() != null && !user.getPassword().isEmpty()) {
 					username = user.getUsername();
 					pwd = user.getPassword();
-					valid = ud.loginUser(username, pwd);
+					valid = ud.verifyLoginCredentials(username, pwd);
 				}
 				
 				if(valid == null) {

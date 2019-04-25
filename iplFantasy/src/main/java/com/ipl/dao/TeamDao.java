@@ -4,12 +4,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
 
 import com.ipl.pojo.Fixture;
 import com.ipl.pojo.Player;
@@ -157,7 +162,7 @@ public class TeamDao extends Dao{
 		return fixtures;
 	}
 	
-	public Fixture registerMatch(String matchId){
+	public Fixture getCurrentMatch(String matchId){
 		Long mid = Long.parseLong(matchId);
 		@SuppressWarnings("deprecation")
 		Criteria cfix = getSession().createCriteria(Fixture.class);
@@ -166,7 +171,7 @@ public class TeamDao extends Dao{
 		return f;
 	}
 	
-	public List<Player> getPlayers(Team teamObj){
+	public List<Player> getPlayers4Team(Team teamObj){
 		@SuppressWarnings("deprecation")
 		Criteria play = getSession().createCriteria(Player.class);
 		play.add(Restrictions.eq("team", teamObj));
@@ -196,7 +201,7 @@ public class TeamDao extends Dao{
 		//USESRSELECTION FILLING OUT PLAYER SET************
 		
 		//USERSELECTION SETTING UP MATCH
-		Fixture fixture = registerMatch(matchid);
+		Fixture fixture = getCurrentMatch(matchid);
 		//USERSELECTION SETTING UP MATCH
 		
 		//USERSELECTION SETTING UP WINNER
@@ -229,8 +234,10 @@ public class TeamDao extends Dao{
 		}
 	}
 
-	public List<Userselection> registred(User user){
+	public List<Userselection> createdTeamPerUser(User user){
 		Criteria c = getSession().createCriteria(Userselection.class);
+		c.add(Restrictions.eq("user",user));
+		
 		List<Userselection> usersel = c.list();
 		return usersel;
 	}
@@ -284,4 +291,119 @@ public class TeamDao extends Dao{
 			return pointsModel;
 		}
 	} 
+	
+	public List<Playerpoints> getPlayerpoints(Fixture fixture,List<Player> team1players, List<Player> team2players) {
+		
+		List<Playerpoints> plist = new ArrayList<Playerpoints>();
+		
+		for(Player p:team1players) {
+			Playerpoints plyrpts = new Playerpoints();
+			plyrpts.setFixture(fixture);
+			plyrpts.setPlayer(p);
+			plyrpts.setPoints(0);
+			plyrpts.setTeam(fixture.getTeam1());
+			plist.add(plyrpts);
+		}
+		for(Player p: team2players) {
+			Playerpoints plyrpts = new Playerpoints();
+			plyrpts.setFixture(fixture);
+			plyrpts.setPlayer(p);
+			plyrpts.setPoints(0);
+			plyrpts.setTeam(fixture.getTeam2());
+			plist.add(plyrpts);
+		}
+		return plist;
+	}
+	
+	public List<Playerpoints> filledPoints(Fixture fixture) {
+		Criteria cfix = getSession().createCriteria(Playerpoints.class);
+		cfix.add(Restrictions.eq("fixture",fixture));
+		List pp = cfix.list();
+			if(null != pp && pp.size()>0) {
+				return pp;
+			}else {
+				return null;
+			}
+	}
+	
+	public static Player fetchPlayer(Long plyrid) {
+		Criteria cplay = getSession().createCriteria(Player.class);
+		cplay.add(Restrictions.idEq(plyrid));
+		
+		return (Player)cplay.uniqueResult();
+	}
+	
+	public List<Playerpoints> readMap(Map<String, String[]> reqMap,Fixture fixture) {
+		List<Playerpoints> playerpoints = new ArrayList<Playerpoints>();
+//		http://theopentutorials.com/examples/java-ee/servlet/get-all-parameters-in-html-form-using-getparametermap/
+		Set set = reqMap.entrySet();
+		Iterator it = set.iterator();
+		while(it.hasNext()) {
+			Map.Entry<String, String[]> entry = 
+	                (Entry<String, String[]>) it.next();
+			Playerpoints plyrpts = new Playerpoints();
+			long playerId = Long.parseLong(entry.getKey());
+			String[] paramValues = entry.getValue();
+			String paramValue = ""; long pts;
+			if (paramValues.length == 1) {
+                paramValue = paramValues[0];
+            }
+			if(paramValue.equals("")) {
+				pts = 0;
+			}else {
+				pts = Long.parseLong(paramValue);
+			}
+			
+			plyrpts.setPlayer(fetchPlayer(playerId));
+			plyrpts.setFixture(fixture);
+			plyrpts.setTeam(fetchPlayer(playerId).getTeam());
+			plyrpts.setPoints(pts);
+			playerpoints.add(plyrpts);
+		}
+
+//		for (Entry<String, String[]> entry : reqMap.entrySet()) {
+//			Playerpoints plyrpts = new Playerpoints();
+//			long playerId = Long.parseLong(entry.getKey());
+//			long pts;
+//			
+//			if(entry.getValue() != null) { 
+//				pts = 0;
+//			}else {
+//				pts = Long.parseLong(entry.getValue());
+//			}
+//			plyrpts.setPlayer(fetchPlayer(playerId));
+//			plyrpts.setFixture(fixture);
+//			plyrpts.setTeam(fetchPlayer(playerId).getTeam());
+//			plyrpts.setPoints(pts);
+//			playerpoints.add(plyrpts);
+//		}
+		return playerpoints;
+	}
+	
+	public boolean pointsSave(List<Playerpoints> playerpointslist) {
+		try {
+			for(Playerpoints p:playerpointslist) {
+				begin();
+				getSession().save(p);
+				commit();
+			}
+			return true;
+		}catch(HibernateException e) {
+			rollback();
+			e.printStackTrace();
+		}finally {
+			close();
+		}
+		return false;
+	}
+	
+	public List<Object[]> getAllUsers(){
+		String hql = "SELECT sum(p.points),u.user_userId from playerpoints p, userselection u  where  p.fixture_matchId = u.fixture_matchId AND u.user_userId in (select userId from User)";
+		Query q = getSession().createNativeQuery(hql);
+		List<Object[]> mapOfUsrPoints = q.list();
+//		for(Object o :mapOfUsrPoints) {
+//			Map<Long, long>  
+//		}
+		return null;
+	}
 }

@@ -23,6 +23,9 @@ public class Playerpoints {
 	@OneToOne
 	private Player player;
 	
+	@OneToOne
+	private Team team;
+	
 	@Column(name="points")
 	private long points;
 
@@ -57,6 +60,13 @@ public class Playerpoints {
 	public void setPoints(long points) {
 		this.points = points;
 	}
-	
+
+	public Team getTeam() {
+		return team;
+	}
+
+	public void setTeam(Team team) {
+		this.team = team;
+	}
 	
 }

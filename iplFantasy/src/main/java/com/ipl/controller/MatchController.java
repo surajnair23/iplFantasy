@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -16,7 +17,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.ipl.dao.TeamDao;
 import com.ipl.pojo.Fixture;
+import com.ipl.pojo.Player;
+import com.ipl.pojo.Playerpoints;
 import com.ipl.validator.TeamValidator;
+
+
+//*-----------------|-------------------|--------------*//
+//matchCentre.htm	| matchCentre.jsp	| list of matches   
+//matchupdate.htm	| void				| update the winner
+//scoreboard.htm	| score.jsp			| player points update
+
 
 @Controller
 public class MatchController {
@@ -86,7 +96,7 @@ public class MatchController {
 		//update match winner /ipl/user/updatematch.htm?matid=6&winteam=2
 		@RequestMapping(value="matchupdate.htm",method = RequestMethod.GET)
 		public void updateMatch(HttpServletRequest request,Model model){
-			System.out.println("AJAX call");
+			
 			HttpSession session = request.getSession(false);
 			if(session != null) {
 				if(session.getAttribute("admin") != null) { 
@@ -97,6 +107,58 @@ public class MatchController {
 						{System.out.println("Value did not update");}
 				}
 			}
+		}
+		
+		//Scoreboard update
+		@RequestMapping(value="scoreboard.htm",method =RequestMethod.GET)
+		public String updatePlayerscore(Model model, HttpServletRequest request) {
+			HttpSession session = request.getSession(false);
+			if(session != null) {
+				if(session.getAttribute("admin") != null) {
+					String matchId = request.getParameter("matid");
+					String matchINnew = matchId == null ? (String)session.getAttribute("matchid"):matchId;
+					String val = matchINnew.replace("\'", "");
+					//use the matchId to fetch everyone
+					Fixture fixture= teamdao.getCurrentMatch(val);
+					model.addAttribute("fixture",fixture);
+					
+					//check if points are already updated
+					List<Playerpoints> pplist = teamdao.filledPoints(fixture);
+					if(null != pplist) {
+						model.addAttribute("points", pplist);
+					}else {
+						//else move on to create command class
+						List<Player> team1Player = teamdao.getPlayers4Team(fixture.getTeam1());
+						List<Player> team2Player = teamdao.getPlayers4Team(fixture.getTeam2());
+						List<Playerpoints> playerpoints = teamdao.getPlayerpoints(fixture,team1Player,team2Player);
+						model.addAttribute("fillout", playerpoints);
+						model.addAttribute("playerpoints", new Playerpoints());
+						session.setAttribute("matchid", val);
+					}
+					return "score";
+				}
+			}
+			
+			return "score";
+		}
+		
+		@RequestMapping(value="scoreboard.htm",method =RequestMethod.POST)
+		public String postPlayerscore(Model model, HttpServletRequest request) {
+			System.out.println("data fetched");
+			HttpSession session = request.getSession(false);
+			Map<String,String[]> reqMap = request.getParameterMap();
+			String val = (String)session.getAttribute("matchid");
+			
+			if(session != null) {
+				if(session.getAttribute("admin") != null) {
+					Fixture fixture= teamdao.getCurrentMatch(val);
+					//parse to player points
+					List<Playerpoints> playerpointList = teamdao.readMap(reqMap,fixture);
+					boolean isSaved = teamdao.pointsSave(playerpointList);
+					return "redirect:matchCentre.htm";
+				}
+			}
+			return pgntfn;
 		}
 		
 		

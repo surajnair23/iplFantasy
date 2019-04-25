@@ -6,9 +6,10 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
-import com.ipl.exception.UserException;
 import com.ipl.pojo.User;
+import com.ipl.utility.UserException;
 
 @SuppressWarnings("deprecation")
 public class UserDao extends Dao {
@@ -57,21 +58,25 @@ public class UserDao extends Dao {
 	}
 	
 	//function to facilitate login
-	public String loginUser(String username, String pwd) {
+	public String verifyLoginCredentials(String username, String pwd) {
 		String result = null;
 		try {
 			begin();
 			Criteria c = getSession().createCriteria(User.class);
 			c.add(Restrictions.eq("username", username));
-			c.add(Restrictions.eq("password",pwd));
+//			c.add(Restrictions.eq("password",pwd));
 			c.setMaxResults(1);
 			User userRes = (User) c.uniqueResult();
 			//check if it contains
+			
+			//verify hashses
 			if(userRes != null) {
-				commit();
-				result = "valid";
-				if(userRes.getIsApproved())
-					result = "authorized";
+				if(BCrypt.checkpw(pwd, userRes.getPassword())) {
+					commit();
+					result = "valid";
+					if(userRes.getIsApproved())
+						result = "authorized";
+				}
 			}
 		}catch(HibernateException e) {
 			rollback();
@@ -136,12 +141,17 @@ public class UserDao extends Dao {
 		return result;
 	}
 
-	public User getUserObj(String username) {
-		// TODO Auto-generated method stub
+	public User getLoggedInUser(String username) {
 		Criteria c = getSession().createCriteria(User.class);
 		c.add(Restrictions.eq("username", username));
-		
 		User user = (User) c.uniqueResult(); 
 		return user;
+	}
+	
+	public User getLoggedUser(Long userId) {
+		Criteria cuser = getSession().createCriteria(User.class);
+		cuser.add(Restrictions.idEq(userId));
+		User u = (User)cuser.uniqueResult();
+		return u;
 	}
 }

@@ -32,7 +32,10 @@
 	<button class="btn btn-primary" id="showDiv">Add a Team</button>
     <br><br><br>
     <c:if test="${requestScope.success != null}">
-    	<p class="glow"><c:out value="${requestScope.success}"></c:out></p>
+    	<p style="color:green;"><c:out value="${requestScope.success}"></c:out></p>
+    </c:if>
+    <c:if test="${requestScope.error != null}">
+    	<p style="color:blue;"><c:out value="${requestScope.erro}"></c:out></p>
     </c:if>
     </div>
 	<div id="addForm" class="col-sm-6">

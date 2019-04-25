@@ -9,4 +9,5 @@
 	<bean class="com.ipl.validator.TeamValidator" id="teamvalidator"/>
 	<bean class="com.ipl.dao.UserDao" id="userdao"/>
 	<bean class="com.ipl.dao.TeamDao" id="teamdao"/>
+	<bean class="com.ipl.utility.SendEmail" id="sendemail"></bean>
 </beans>

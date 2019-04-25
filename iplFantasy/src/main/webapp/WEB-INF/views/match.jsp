@@ -25,14 +25,14 @@
 			<h2>Open Matches:</h2>
 			<table class="table table-bordered">
 			<tr>
-				<td>Match</td><td>Day</td><td>Venue</td><td>Make Team</td>
+				<td>Match Id</td><td>Match</td><td>Day</td><td>Venue</td><td>Make Team</td>
 			</tr>
 		    <c:forEach var="mat" items="${fixtures}">
 		   	<c:if test="${mat.getWinTeam() == null}">
-		   		<tr>
+		   		<tr><td><c:out value="${mat.getMatchId()}"/></td>
 		   		<td><c:out value="${mat.getTeam1().getTeamName()}"/>(<c:out value="${mat.getTeam1().getTeamAbv()}"/>) VS
 		   		<c:out value="${mat.getTeam2().getTeamName()}"/>(<c:out value="${mat.getTeam2().getTeamAbv()}"/>)</td>
-		   		<td><c:out value="${mat.getMatchDate()}"/></td>
+		   		<td><c:out value="${mat.getMatchDate()}"/> PM</td>
 		   		<td><c:out value="${mat.getVenue()}"/></td><c:set var="rand"><%= java.lang.Math.round(java.lang.Math.random() * 100) %></c:set>
 		   		<td><a href="${pageContext.request.contextPath}/user/teamselection.htm?matid='<c:out value="${mat.getMatchId()}"/>'" class="btn btn-success">Make a Team</button>
 		   		</td>
@@ -44,14 +44,14 @@
 		    <h2>Closed Matches:</h2>
 		    <table class="table table-bordered">
 			<tr>
-				<td>Match</td><td>Day</td><td>Venue</td><td>Winner</td>
+				<td>Match Id</td><td>Match</td><td>Day</td><td>Venue</td><td>Winner</td>
 			</tr>
 		    <c:forEach var="mat" items="${fixtures}">
 		   	<c:if test="${mat.getWinTeam() != null}">
-		   		<tr>
+		   		<tr><td><c:out value="${mat.getMatchId()}"/></td>
 		   		<td><c:out value="${mat.getTeam1().getTeamName()}"/>(<c:out value="${mat.getTeam1().getTeamAbv()}"/>) VS
 		   		<c:out value="${mat.getTeam2().getTeamName()}"/>(<c:out value="${mat.getTeam2().getTeamAbv()}"/>)</td>
-		   		<td><c:out value="${mat.getMatchDate()}"/></td>
+		   		<td><c:out value="${mat.getMatchDate()}"/>PM</td>
 		   		<td><c:out value="${mat.getVenue()}"/></td>
 		   		<td><c:out value="${mat.getWinTeam().getTeamName()}"/></td>
 		   		</tr>

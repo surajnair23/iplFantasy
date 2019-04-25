@@ -7,11 +7,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.ipl.dao.UserDao;
+import com.ipl.pojo.User;
+import com.ipl.utility.SendEmail;
+
+//*---------------|--------------------|--------------*//
+//mainPage.htm	  | mainpage.jsp	   | landing page   
+//approval.htm	  | approval		   | authorize users
+//userapprove.htm | void			   | AJAx call
+//userdelete.htm  | void		   	   | AJAx call
+//scoreboard.htm  | score.jsp   	   | dash board to update player scores
+//signout.htm     | redirect:login.htm | sign out page    
 
 @Controller
 public class MainPageController {
@@ -19,6 +28,8 @@ public class MainPageController {
 	@Autowired
 	UserDao userdao;
 	
+	@Autowired
+	SendEmail sendemail;
 	
 	private static final Logger logger = LoggerFactory.getLogger(MainPageController.class);
 	private static final String pgntfn = "redirect:pageNtFound.htm";
@@ -34,7 +45,6 @@ public class MainPageController {
 		return pgntfn;
 	}
 	
-//	approve user (show list)
 	@RequestMapping(value="approval.htm", method = RequestMethod.GET)
 	public String approvalList(HttpServletRequest request) {
 		HttpSession session = request.getSession(false);
@@ -49,7 +59,6 @@ public class MainPageController {
 		}
 	}
 	
-	//approve user
 	@RequestMapping(value="userapprove.htm", method = RequestMethod.GET)
 	public void approveUser(HttpServletRequest request) {
 		HttpSession session = request.getSession(false);
@@ -57,12 +66,15 @@ public class MainPageController {
 		long id = Long.parseLong(uid);
 		if(session != null) {
 			if(session.getAttribute("admin") != null) {
-				userdao.approveUser(id);
+				if(userdao.approveUser(id)) {
+					//send email that user has been authorized
+					User userapproved = userdao.getLoggedUser(id);
+					sendemail.userApprovedEmail(userapproved);
+				}
 			}
 		}
 	}
 	
-	//delete user
 	@RequestMapping(value="userdelete.htm", method = RequestMethod.GET)
 	public void deleteUser(HttpServletRequest request) {
 		HttpSession session = request.getSession(false);
@@ -75,20 +87,11 @@ public class MainPageController {
 		}
 	}
 	
-	//Sign out a User
 	@RequestMapping(value="signout.htm",method = RequestMethod.GET)
 	public String signout(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		session.invalidate();
 		return "redirect:login.htm";
-	}
-	
-	//Scoreboard update
-	@RequestMapping(value="scoreboard.htm",method =RequestMethod.GET)
-	public String updatePlayerscore(Model model, HttpServletRequest request) {
-		
-		//chck if the matchid in the url does has points, then just show that, else create form and update the details
-		return "score";
 	}
 	
 	//page not found
