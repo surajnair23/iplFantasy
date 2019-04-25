@@ -44,7 +44,7 @@
     	<div class="input-group-prepend">
 		    <span class="input-group-text"> <i class="fa fa-phone"></i> </span>
 		</div>
-    	<form:input path="phone" class="form-control" placeholder="Phone number" type="number" style="width:auto"/>
+    	<form:input path="phone" class="form-control" placeholder="Phone number(XXX-XXX-XXXX)" type="text" style="width:auto"/>
     	<div>
     		<span><form:errors path="phone"/></span>
     	</div>

@@ -35,7 +35,7 @@
 				type:"GET",
 				url: givenutl,
 				complete: function(result){
-	    			alert("Winner is updated");
+	    			alert("Winner is updated,refresh to update");
 	    			window.location.href=window.location.href;
 	  		}});
 		});
@@ -108,11 +108,14 @@
 					<c:if test="${fixtures != null}">
 						<table class="table table-bordered">
 						<tr>
-							<td>Match Date</td><td>Team1</td><td>Team2</td><td>Venue</td><td>Winner?</td>
+							<td>Match Id</td><td>Match Date</td><td>Team1</td><td>Team2</td><td>Venue</td><td>Winner?</td>
 						</tr>
 					
 						<c:forEach var = "fixture" items = "${fixtures}">
 						<tr>
+							<td>
+								<c:out value="${fixture.getMatchId()}"/>
+							</td>
 							<td>
 								<c:out value="${fixture.getMatchDate()}"/>
 							</td>

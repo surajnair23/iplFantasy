@@ -17,7 +17,6 @@
 				</li>
 			</ul>
 		</li>
-		<li><a href="${pageContext.request.contextPath}/scoreboard.htm">Scoreboard</a></li>
 		<li class="dropdown">
 			<a class="dropdown-toggle" data-toggle="dropdown" href="#">Dashboard
 			<span class="caret"></span></a>

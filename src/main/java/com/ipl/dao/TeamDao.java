@@ -10,9 +10,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
 
 import com.ipl.pojo.Fixture;
 import com.ipl.pojo.Player;
@@ -232,8 +234,10 @@ public class TeamDao extends Dao{
 		}
 	}
 
-	public List<Userselection> registred(User user){
+	public List<Userselection> createdTeamPerUser(User user){
 		Criteria c = getSession().createCriteria(Userselection.class);
+		c.add(Restrictions.eq("user",user));
+		
 		List<Userselection> usersel = c.list();
 		return usersel;
 	}
@@ -391,5 +395,15 @@ public class TeamDao extends Dao{
 			close();
 		}
 		return false;
+	}
+	
+	public List<Object[]> getAllUsers(){
+		String hql = "SELECT sum(p.points),u.user_userId from playerpoints p, userselection u  where  p.fixture_matchId = u.fixture_matchId AND u.user_userId in (select userId from User)";
+		Query q = getSession().createNativeQuery(hql);
+		List<Object[]> mapOfUsrPoints = q.list();
+//		for(Object o :mapOfUsrPoints) {
+//			Map<Long, long>  
+//		}
+		return null;
 	}
 }

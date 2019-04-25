@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.ipl.dao.TeamDao;
 import com.ipl.pojo.Fixture;
 import com.ipl.pojo.Player;
+import com.ipl.pojo.Playerpoints;
 import com.ipl.pojo.PointsModel;
 import com.ipl.pojo.Team;
 import com.ipl.pojo.User;
@@ -115,9 +116,14 @@ public class UserController {
 			if(session.getAttribute("user") != null) {
 //				logic to display all teams
 				User user = (User) session.getAttribute("user");
-				List<Userselection> usersel = teamdao.registred(user);
-				List<PointsModel> pointslist = teamdao.getPoints(usersel,user);
-				model.addAttribute("points",pointslist);
+				List<Userselection> usersel = teamdao.createdTeamPerUser(user);
+				if(usersel != null) {
+					List<PointsModel> pointslist = teamdao.getPoints(usersel,user);
+					model.addAttribute("points",pointslist);
+				}else {
+					List<PointsModel> pointslist = null;
+					model.addAttribute("points",pointslist);
+				}
 				return "teamsel";
 			}
 		}
@@ -147,6 +153,19 @@ public class UserController {
 					return "update";
 				}else {
 					return pgntfn;
+				}
+			}
+			return pgntfn;
+		}
+		
+		//leaderboard
+		@RequestMapping(value="leaderboard.htm",method= RequestMethod.GET)
+		public String getLeaderBoard(HttpServletRequest request, Model model) {
+			HttpSession session = request.getSession(false);
+			if(session != null) {
+				if(session.getAttribute("user") != null) {
+					List<Object[]> listUsers = teamdao.getAllUsers();
+					return "board";
 				}
 			}
 			return pgntfn;

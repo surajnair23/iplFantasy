@@ -23,17 +23,18 @@
 			<c:if test="${points != null}">
 				<c:forEach var="pt" items="${points}">
 					<div class="well well-lg">
-						<c:out value="${pt.getFixture().getMatchId()}"/><br>
 						<br><c:out value="${pt.getFixture().getTeam1().getTeamName()}"/>
 							(<c:out value="${pt.getFixture().getTeam1().getTeamAbv()}"/>) vs
 						    <c:out value="${pt.getFixture().getTeam2().getTeamName()}"/>
-						    (<c:out value="${pt.getFixture().getTeam2().getTeamAbv()}"/>)
+						    (<c:out value="${pt.getFixture().getTeam2().getTeamAbv()}"/>)<br>
 						<c:if test="${null != pt.getPlayerpoints()}">
 							<!-- Player points exists -->
 							<c:forEach var="pset" items="${pt.getPlayerpoints()}">
 								<c:out value="${pset.getPlayer().getPlayerName()}"/> -
 								<c:out value="${pset.getPoints()}"/> 
+								<c:set var="total" value="${total+pset.getPoints()}"/>
 							</c:forEach>
+							<h3>Your total points:</h3><c:out value="${total}"/>
 						</c:if>
 						<c:if test="${null == pt.getPlayerpoints()}">
 						<!-- Player points do not exists -->
@@ -44,6 +45,9 @@
 						</c:if>
 					</div>
 				</c:forEach>
+			</c:if>
+			<c:if test="${points == null}">
+				<br><br><br><h3>You have not played any games so far!</h3>
 			</c:if>
 		</div>
 	</div>

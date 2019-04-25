@@ -24,6 +24,7 @@ public class UserValidator implements Validator{
 		// TODO Auto-generated method stub
 		UserDao ud = new UserDao();
 		User u = (User) target;
+		
 		String username = u.getUsername();
 		Boolean ifExists = false;
 		try {
@@ -45,9 +46,9 @@ public class UserValidator implements Validator{
 		if(ifExists) {
 			errors.rejectValue("username", "empty.username", "Username is already taken");
 		}
-		
-		if(!String.valueOf(u.getPhone()).matches("^\\d{10}$")) {
-			errors.rejectValue("phone", "empty.phone", "Phone should contain atleast 10 digits");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "phone", "empty.phone", "Cannot be blank");
+		if(!String.valueOf(u.getPhone()).matches("^[2-9]\\d{2}-\\d{3}-\\d{4}$")) {
+			errors.rejectValue("phone", "empty.phone", "Phone should contain atleast 10 digits in format starting with 2");
 		}
 		
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "fName", "empty.fName", "First Name is Required");
