@@ -1,4 +1,4 @@
-# iplFantasy League
+# Cric Fantasy League
 
 Final project for INFO 6250 - Web Development Tools and Methods course at Northeastern University's College of Engineering as a part of it's Masters in Science Information Systems coursework. The course aims at strengthening students knowledge of Spring MVC framework and integration with Hibernate which is an Object Relational Mapping tool for Java developers, helping access database using Java objects.  
 
@@ -7,7 +7,7 @@ You can find more about the course at http://msis.neu.edu/spring2019/31237.pdf
 
 ## Description 
 
-• iplFantasyLeague was built to create a virtual gaming environment where users could compete on their knowledge of a players performance for each match and compare against others within the game.
+• FantasyLeague was built to create a virtual gaming environment where users could compete on their knowledge of a players performance for each match and compare against others within the game.
 
 • To make it a feature-rich application and more real time we implemented JavaMail for Email using SMTP, BCrypt for password hashing of all user and system actions.
 
